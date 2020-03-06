@@ -4,34 +4,45 @@
         <title>Name form</title>
         <style>
             
-            body { background:rgb(40, 194, 19); font: 13px Helvetica, Arial; }
-            .container { background: rgb(27, 129, 211); padding: 20px; }
+            .body {font: 13px Helvetica, Arial; background-color: gray;}
+            
+            .header {padding: 20px; background: rgb(27, 129, 211);}
             .container button {margin-top: 10px !important;}
-            .jumbotron {padding: 20px;}
-            .footer {
-                    position: fixed;
-                    left: 0;
-                    bottom: 0;
-                    width: 100%;
+            .footer {  
                     color:rgb(255, 255, 255);
                     background-color: rgb(27, 129, 211);
                     text-align: center;
+                    padding-bottom: 0;
                 }
+
+
+            #canvas {
+              display:block;
+              margin:5vh auto;
+              border-radius:50%;
+              box-shadow: 0 5px 14px black;
+              padding-top: ;
+            }
         </style>
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     </head>
     <body>
-        <div class="container">
+      <div class="container">
+        <div class="container header">
             <h1 id="h">Welcome</h1>
-            <p>This server works on NodeJS/Express engine</p>
+            <h3>This server runs on NodeJS/Express engine</h3>
+            
         </div>
-        <div class=container>
+        <div class="container">
+            <p>Please input your name and your lastname:</p>
             <form action="">
                 <div class="row">
                     <div class="col">
+                      <label for="name">Name</label>
                       <input id="name" type="text" class="form-control" placeholder="First name">
                     </div>
                     <div class="col">
+                      <label for="lastname">Lastname</label>
                       <input id="lastname" type="text" class="form-control" placeholder="Last name">
                     </div>
                 </div>
@@ -41,24 +52,97 @@
             </form>
         </div>
 
-        <div class="footer" class="container">
-            <p>Arshia Hosseini</p>
+        <div class="container">
+          <canvas id="canvas" width="400" height="400"></canvas>
         </div>
+
+        <div class="container footer fixed-bottom">
+            <p>Arshia Hosseini® <br/>2020</p>
+        </div>
+      </div>
+
 
         <script src="/socket.io/socket.io.js"></script>
         <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
         <script>
+          
           $(function () {
             var socket = io();
             $('form').submit(function(e){
               e.preventDefault(); // prevents page reloading
               socket.emit('name', { name: $('#name').val(), lastname: $('#lastname').val() } );
-              $('#h').html('Welcome '+$('#name').val()+' '+$('#lastname').val());
+              $('#h').html('Hi '+$('#name').val()+' '+$('#lastname').val());
               $('#name').val('');
               $('#lastname').val('');
               return false;
             });
           });
+
+
+          var canvas = document.getElementById('canvas');
+          var ctx = canvas.getContext('2d');
+          ctx.strokeStyle = '#28d1fa';
+          
+          ctx.lineWidth = 17;
+          ctx.lineCap = 'round';
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = '#28d1fa';
+          
+          function degToRad(degree) {
+            var factor = Math.PI/180;
+            return degree*factor;
+          }
+          
+          function renderTime() {
+            
+            var now = new Date();
+            var today = now.toDateString();
+            var time = now.toLocaleTimeString();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
+            var milliseconds = now.getMilliseconds();
+            var newSeconds = seconds+ (milliseconds/1000);
+            
+            // Background
+            gradient = ctx.createRadialGradient(200,200,5,200,200,300);
+            gradient.addColorStop(0,'#09303a');
+            gradient.addColorStop(1, '#000000');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0,0,400,400);
+            
+            // Hours
+            ctx.beginPath();
+            ctx.arc(200, 200, 170, degToRad(270), degToRad((hours*30)-90));
+            ctx.stroke();
+            
+            // Minutes
+             ctx.beginPath();
+            ctx.arc(200, 200, 140, degToRad(270), degToRad((minutes*6)-90));
+            ctx.stroke();
+            // Seconds
+             ctx.beginPath();
+            ctx.arc(200, 200, 110, degToRad(270), degToRad((newSeconds*6)-90));
+            ctx.stroke();
+            // Date 
+            ctx.font = "20px Helvetica";
+            ctx.fillStyle = '#28d1fa';
+            ctx.fillText(today, 140, 200);
+            
+            // Time
+            ctx.font = "15px Helvetica";
+            ctx.fillStyle = '#28d1fa';
+            ctx.fillText(time, 140, 230);
+
+            // Trademark
+            ctx.font = "12px Helvetica";
+            ctx.fillStyle = '#28d1fa';
+            ctx.fillText('Arshiahsn', 140, 250);
+            
+          }
+          setInterval(renderTime, 40);
+        </script>
+ 
         </script>
 
     </body>
