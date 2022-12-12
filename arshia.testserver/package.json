@@ -4,7 +4,7 @@
     "description": "Arshia's Test Server",
     "dependencies": {
         "cookie-parser": "^1.4.4",
-        "express": "^4.17.1",
+        "express": "^4.17.3",
         "express-session": "^1.17.0",
         "socket.io": "^2.3.0"
     }
